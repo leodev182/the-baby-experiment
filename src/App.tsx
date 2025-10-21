@@ -1,6 +1,4 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
@@ -12,14 +10,18 @@ function App() {
         <h1 className="text-3xl font-bold text-green-400">Tailwind ON ✅</h1>
       </div>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+        <a
+          target="_blank"
+          href="https://calendar.google.com/calendar/event?action=TEMPLATE&amp;tmeid=ZmE5N3VmZzd2YjBxNnZlcjN2MDdrY2ZnbWsgYXJva2VuMTgyQG0&amp;tmsrc=aroken182%40gmail.com"
+          rel="noopener noreferrer"
+        >
+          <img
+            // style={{ border: "0" }}
+            src="https://calendar.google.com/calendar/images/ext/gc_button1_es.gif"
+            alt="Google Calendar"
+          />
         </a>
       </div>
-      <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
