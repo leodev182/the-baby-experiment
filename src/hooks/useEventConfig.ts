@@ -26,7 +26,6 @@ const MOCK_CONFIG: EventConfig = {
 export function useEventConfig() {
   const [config, setConfig] = useState<EventConfig | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -59,5 +58,5 @@ export function useEventConfig() {
     fetchConfig();
   }, []);
 
-  return { config, loading, error };
+  return { config, loading };
 }
