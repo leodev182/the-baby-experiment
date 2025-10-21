@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 // ============================================
 // ENTIDADES PRINCIPALES
 // ============================================
@@ -127,7 +129,7 @@ export interface FirestorePrediction {
   suggestedName: string;
   message: string;
   scores: GameScores;
-  timestamp: FirebaseFirestore.Timestamp;
+  timestamp: Timestamp;
   userAgent: string;
 }
 
@@ -135,7 +137,7 @@ export interface FirestorePrediction {
  * Estructura del documento de configuración
  */
 export interface FirestoreEventConfig {
-  revealDate: FirebaseFirestore.Timestamp;
+  revealDate: Timestamp;
   isRevealed: boolean;
   actualResult: Hypothesis | null;
   babyName: string | null;
