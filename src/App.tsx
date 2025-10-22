@@ -12,6 +12,9 @@ import {
 } from "./services/localStorageService";
 import { submitPrediction } from "./services/submissionService";
 import type { GamePhase, Hypothesis } from "./types";
+import { Phase1Collider } from "./components/Games/Phase1Collider/Phase1Collider";
+import { Phase2Equation } from "./components/Games/Phase2Equation/Phase2Equation";
+import { Phase3Synthesis } from "./components/Games/Phase3Synthesis/Phase3Synthesis";
 
 function App() {
   const [currentPhase, setCurrentPhase] = useState<GamePhase>("intro");
@@ -160,62 +163,16 @@ function App() {
 
       {/* Juego 1: Collider */}
       {currentPhase === "collider" && (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl text-cyan-400 font-bold">
-              FASE 1: COLISIONADOR DE PARTÍCULAS
-            </h2>
-            <p className="text-gray-400">Juego en desarrollo (Día 4)</p>
-
-            {/* Botón temporal para simular completar el juego */}
-            <button
-              onClick={() => handleColliderComplete(85)}
-              className="mt-4 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-black rounded-lg font-semibold"
-            >
-              [DEV] Simular juego (85 pts)
-            </button>
-          </div>
-        </div>
+        <Phase1Collider onComplete={handleColliderComplete} />
       )}
-
       {/* Juego 2: Equation */}
       {currentPhase === "equation" && (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl text-cyan-400 font-bold">
-              FASE 2: ECUACIÓN DE ENLACE
-            </h2>
-            <p className="text-gray-400">Juego en desarrollo (Día 4)</p>
-
-            {/* Botón temporal para simular completar el juego */}
-            <button
-              onClick={() => handleEquationComplete(92)}
-              className="mt-4 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-black rounded-lg font-semibold"
-            >
-              [DEV] Simular juego (92 pts)
-            </button>
-          </div>
-        </div>
+        <Phase2Equation onComplete={handleEquationComplete} />
       )}
 
       {/* Juego 3: Synthesis */}
       {currentPhase === "synthesis" && (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl text-cyan-400 font-bold">
-              FASE 3: SÍNTESIS FARMACÉUTICA
-            </h2>
-            <p className="text-gray-400">Juego en desarrollo (Día 4)</p>
-
-            {/* Botón temporal para simular completar el juego */}
-            <button
-              onClick={() => handleSynthesisComplete(78)}
-              className="mt-4 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-black rounded-lg font-semibold"
-            >
-              [DEV] Simular juego (78 pts) → Enviar a Firebase
-            </button>
-          </div>
-        </div>
+        <Phase3Synthesis onComplete={handleSynthesisComplete} />
       )}
 
       {/* Pantalla de éxito */}
