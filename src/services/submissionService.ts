@@ -81,17 +81,3 @@ async function updateStats(draft: PredictionDraft): Promise<void> {
     // No lanza error porque la predicción YA se guardó
   }
 }
-
-/**
- * Verifica si ya existe una predicción para este userId
- */
-export async function hasPrediction(userId: string): Promise<boolean> {
-  try {
-    const predictionRef = doc(db, "predictions", userId);
-    const docSnap = await predictionRef.get();
-    return docSnap.exists();
-  } catch (error) {
-    console.error("Error verificando predicción existente:", error);
-    return false;
-  }
-}
