@@ -26,7 +26,7 @@ export function Phase1Collider({ onComplete }: Phase1ColliderProps) {
     Array<{ x: number; y: number; vx: number; vy: number }>
   >([]);
 
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
   const speedRef = useRef(1);
 
   // Iniciar juego
