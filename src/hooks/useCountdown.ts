@@ -3,10 +3,7 @@ import type { CountdownData } from "../types";
 
 export function useCountdown(targetDate: number): CountdownData {
   const [timeLeft, setTimeLeft] = useState<CountdownData>(() => {
-    // Calcular estado inicial inmediatamente
     const now = Date.now();
-
-    // 🔧 FIX: Validar targetDate
     const validTargetDate =
       targetDate && targetDate > now
         ? targetDate
@@ -48,8 +45,6 @@ export function useCountdown(targetDate: number): CountdownData {
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = Date.now();
-
-      // Validar targetDate también aquí
       const validTargetDate =
         targetDate && targetDate > now
           ? targetDate
@@ -67,7 +62,6 @@ export function useCountdown(targetDate: number): CountdownData {
           isExpired: true,
         });
 
-        // Limpiar interval cuando expire
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
@@ -93,11 +87,9 @@ export function useCountdown(targetDate: number): CountdownData {
       });
     };
 
-    // Calcular inmediatamente
-    calculateTimeLeft();
-
-    // Solo crear interval si no existe y no ha expirado
-    if (!intervalRef.current && !timeLeft.isExpired) {
+    // Solo crear interval UNA VEZ
+    if (!intervalRef.current) {
+      calculateTimeLeft();
       intervalRef.current = setInterval(calculateTimeLeft, 1000);
     }
 
@@ -107,7 +99,7 @@ export function useCountdown(targetDate: number): CountdownData {
         intervalRef.current = null;
       }
     };
-  }, [targetDate, timeLeft.isExpired]);
+  }, [targetDate]); // ✅ Solo re-ejecutar si targetDate cambia
 
   return timeLeft;
 }
