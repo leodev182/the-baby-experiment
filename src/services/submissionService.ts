@@ -66,10 +66,7 @@ async function updateStats(draft: PredictionDraft): Promise<void> {
       [hypothesisField]: increment(1),
 
       // Agregar nombre sugerido al array (si no existe ya)
-      "stats.topNames": arrayUnion({
-        name: draft.suggestedName,
-        count: 1,
-      }),
+      "stats.topNames": arrayUnion(draft.suggestedName),
 
       // Actualizar timestamp
       "stats.lastUpdated": serverTimestamp(),
