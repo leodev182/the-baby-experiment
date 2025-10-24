@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Atom modern neon">
+  <!-- PALETA -->
+  <defs>
+    <radialGradient id="core" cx="50%" cy="45%" r="60%">
+      <stop offset="0"  stop-color="#cfffff"/>
+      <stop offset="0.55" stop-color="#5fe3ff"/>
+      <stop offset="1"  stop-color="#0ea5e9"/>
+    </radialGradient>
+    <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"   stop-color="#60a5fa"/>
+      <stop offset="1"   stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+
+  <!-- FONDO TRANSPARENTE + SAFE MARGIN -->
+  <g transform="translate(20,20)">
+    <!-- NÚCLEO -->
+    <circle cx="236" cy="236" r="92" fill="url(#core)"/>
+    <circle cx="236" cy="236" r="18" fill="#fff"/>
+    <!-- anillo fino para contraste en light/dark -->
+    <circle cx="236" cy="236" r="108" fill="none" stroke="#38bdf8" stroke-opacity="0.35" stroke-width="5"/>
+
+    <!-- ÓRBITAS (trazo doble: glow suave + línea nítida) -->
+    <g fill="none" stroke-linecap="round">
+      <!-- glow -->
+      <g stroke="url(#orbit)" stroke-opacity="0.35" stroke-width="16">
+        <ellipse cx="236" cy="236" rx="176" ry="104"/>
+        <ellipse cx="236" cy="236" rx="176" ry="104" transform="rotate(36 236 236)"/>
+        <ellipse cx="236" cy="236" rx="176" ry="104" transform="rotate(-36 236 236)"/>
+      </g>
+      <!-- línea nítida encima -->
+      <g stroke="url(#orbit)" stroke-width="8">
+        <ellipse cx="236" cy="236" rx="176" ry="104"/>
+        <ellipse cx="236" cy="236" rx="176" ry="104" transform="rotate(36 236 236)"/>
+        <ellipse cx="236" cy="236" rx="176" ry="104" transform="rotate(-36 236 236)"/>
+      </g>
+    </g>
+
+    <!-- ELECTRONES (círculo con aro blanco delgado) -->
+    <g>
+      <circle cx="396" cy="226" r="15" fill="#22d3ee" stroke="#fff" stroke-width="5"/>
+      <circle cx="166" cy="356" r="15" fill="#f472b6" stroke="#fff" stroke-width="5"/>
+      <circle cx="286" cy="404" r="15" fill="#a78bfa" stroke="#fff" stroke-width="5"/>
+    </g>
+  </g>
+</svg>

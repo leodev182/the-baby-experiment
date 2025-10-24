@@ -3,12 +3,14 @@ import { MainLayout } from "./components/Layout/MainLayout";
 import { IntroScreen } from "./components/Intro/IntroScreen";
 import { HypothesisScreen } from "./components/Hypothesis/HypothesisScreen";
 import { InputScreen, type InputData } from "./components/Input/InputScreen";
+import { SuccessScreen } from "./components/Submitted/SuccessScreen";
+import { AdminPanel } from "./components/Admin/AdminPanel";
 import {
   getDraft,
   initializeDraft,
-  clearDraft,
   hasDraft,
   isDraftPartiallyComplete,
+  updateHypothesis,
 } from "./services/localStorageService";
 import { submitPrediction } from "./services/submissionService";
 import type { GamePhase, Hypothesis } from "./types";
@@ -20,6 +22,14 @@ function App() {
   const [currentPhase, setCurrentPhase] = useState<GamePhase>("intro");
   const [isSaving, setIsSaving] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+
+  // Detectar si estamos en la ruta de admin
+  const isAdminRoute = window.location.pathname === "/admin-stats-2025";
+
+  // Si es ruta admin, mostrar AdminPanel directamente
+  if (isAdminRoute) {
+    return <AdminPanel />;
+  }
 
   // Inicializar draft al montar el componente
   useEffect(() => {
@@ -37,7 +47,8 @@ function App() {
   };
 
   const handleHypothesisSelect = (hypothesis: Hypothesis) => {
-    // Solo guarda en localStorage (NO en Firebase)
+    // Sobrescribir hipótesis en localStorage (permite cambiar de opinión)
+    updateHypothesis(hypothesis);
     console.log(`✅ Hipótesis ${hypothesis} guardada en draft`);
 
     // Navegar a InputScreen
@@ -52,12 +63,7 @@ function App() {
 
     if (isDraftPartiallyComplete(draft)) {
       // Si ya tiene todo lo necesario (hipótesis + datos personales)
-      // Podemos enviar AHORA o esperar a los juegos
-
-      // OPCIÓN A: Enviar ahora (sin juegos)
-      // await handleFinalSubmit();
-
-      // OPCIÓN B: Ir a los juegos primero
+      // Ir a los juegos primero
       setCurrentPhase("collider");
 
       console.log("🎮 Navegando a juegos. Draft completo:", draft);
@@ -67,6 +73,7 @@ function App() {
   };
 
   const handleInputBack = () => {
+    // El draft se mantiene, solo volvemos a la fase anterior
     setCurrentPhase("hypothesis");
   };
 
@@ -85,13 +92,12 @@ function App() {
 
       console.log("✅ Predicción enviada exitosamente");
 
-      // Limpiar draft
-      clearDraft();
+      // IMPORTANTE: NO limpiar el draft todavía
+      // SuccessScreen lo necesita para mostrar los datos
+      // Se limpiará cuando el usuario cierre o recargue
 
       // Navegar a pantalla de éxito
       setCurrentPhase("submitted");
-
-      alert("¡Predicción enviada exitosamente! 🎉");
     } catch (error) {
       console.error("❌ Error al enviar predicción:", error);
       alert("Error al enviar tu predicción. Por favor intenta de nuevo.");
@@ -100,7 +106,7 @@ function App() {
     }
   };
 
-  // Handlers para los juegos (cuando los crees en Día 4)
+  // Handlers para los juegos
   const handleColliderComplete = (score: number) => {
     console.log(`🎮 Collider completado: ${score} pts`);
     // updateGameScore("collider", score) ya se llama dentro del juego
@@ -165,6 +171,7 @@ function App() {
       {currentPhase === "collider" && (
         <Phase1Collider onComplete={handleColliderComplete} />
       )}
+
       {/* Juego 2: Equation */}
       {currentPhase === "equation" && (
         <Phase2Equation onComplete={handleEquationComplete} />
@@ -175,30 +182,8 @@ function App() {
         <Phase3Synthesis onComplete={handleSynthesisComplete} />
       )}
 
-      {/* Pantalla de éxito */}
-      {currentPhase === "submitted" && (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-6 max-w-2xl px-4">
-            <div className="text-8xl mb-4">🎉</div>
-            <h2 className="text-4xl text-cyan-400 font-bold">
-              ¡Predicción Registrada!
-            </h2>
-            <p className="text-gray-300 text-lg">
-              Tu hipótesis ha sido guardada exitosamente en la base de datos
-              experimental.
-            </p>
-            <div className="bg-gray-900/50 border-2 border-cyan-500/30 rounded-xl p-6">
-              <p className="text-gray-400">
-                Gracias por participar en el experimento científico más
-                emocionante del año.
-              </p>
-              <p className="text-cyan-400 mt-4 font-semibold">
-                Nos vemos en el reveal 🚀
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Pantalla de éxito - SuccessScreen */}
+      {currentPhase === "submitted" && <SuccessScreen />}
     </MainLayout>
   );
 }

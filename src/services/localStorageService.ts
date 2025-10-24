@@ -1,4 +1,5 @@
 import type { Hypothesis, GameScores } from "@/types";
+import type { Timestamp } from "firebase/firestore";
 
 /**
  * Estructura del borrador (draft) en localStorage
@@ -10,7 +11,7 @@ export interface PredictionDraft {
   suggestedName: string;
   message: string;
   scores: GameScores;
-  timestamp?: number;
+  timestamp?: number | Timestamp;
 }
 
 const STORAGE_KEY = "baby_experiment_prediction_draft";

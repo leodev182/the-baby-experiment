@@ -166,7 +166,8 @@ export function InputScreen({ onSubmit, onBack }: InputScreenProps) {
           {/* Campo 2: Nombre sugerido */}
           <div className="mb-6">
             <label className="block text-cyan-400 font-semibold mb-2">
-              Nombre sugerido para el nuevo espécimen
+              Nombre sugerido (solo nombre) para el resultado del experimento
+              (bebé)
             </label>
             <input
               type="text"
@@ -191,7 +192,8 @@ export function InputScreen({ onSubmit, onBack }: InputScreenProps) {
           {/* Campo 3: Mensaje */}
           <div className="mb-8">
             <label className="block text-cyan-400 font-semibold mb-2">
-              Mensaje para los investigadores principales
+              Mensaje para los investigadores principales y su experimento
+              exitoso
             </label>
             <textarea
               value={formData.message}
