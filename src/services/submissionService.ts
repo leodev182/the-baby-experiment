@@ -34,7 +34,7 @@ export async function submitPrediction(draft: PredictionDraft): Promise<void> {
       message: draft.message,
       scores: draft.scores,
       timestamp: serverTimestamp(),
-      userAgent: navigator.userAgent, // Para prevenir duplicados
+      userAgent: navigator.userAgent,
     });
 
     console.log("✅ Predicción guardada en predictions/");
@@ -65,7 +65,7 @@ async function updateStats(draft: PredictionDraft): Promise<void> {
       "stats.totalPredictions": increment(1),
       [hypothesisField]: increment(1),
 
-      // Agregar nombre sugerido al array (si no existe ya)
+      // Agregar solo el STRING del nombre al array
       "stats.topNames": arrayUnion(draft.suggestedName),
 
       // Actualizar timestamp
