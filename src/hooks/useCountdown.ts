@@ -5,7 +5,12 @@ export function useCountdown(targetDate: number): CountdownData {
   const [timeLeft, setTimeLeft] = useState<CountdownData>(() => {
     // Calcular estado inicial inmediatamente
     const now = Date.now();
-    const difference = targetDate - now;
+
+    const validTargetDate =
+      targetDate && targetDate > now
+        ? targetDate
+        : new Date("2025-10-26T19:00:00-03:00").getTime();
+    const difference = validTargetDate - now;
 
     if (difference <= 0) {
       return {
