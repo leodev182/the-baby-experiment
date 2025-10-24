@@ -13,12 +13,14 @@
 
   html {
     scroll-behavior: smooth;
+    /* 🔧 FIX: Reducir tamaño base de fuente para que todo sea más compacto */
+    font-size: 13px; /* Antes era 16px por defecto */
   }
 
   body {
     @apply bg-bg-dark text-text-light font-tech;
     overflow-x: hidden;
-    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   /* Scrollbar personalizado */
@@ -52,7 +54,7 @@
 @layer components {
   /* Botón principal */
   .btn-primary {
-    @apply px-6 py-3 font-tech font-bold text-lg;
+    @apply px-5 py-2.5 font-tech font-bold text-base;
     @apply bg-gradient-to-r from-physics-primary to-chemistry-primary;
     @apply text-white rounded-lg;
     @apply transition-all duration-300;
@@ -65,15 +67,15 @@
   .card {
     @apply bg-bg-medium bg-opacity-80 backdrop-blur-lg;
     @apply border border-physics-primary border-opacity-30;
-    @apply rounded-xl p-6;
+    @apply rounded-xl p-5;
     @apply shadow-xl;
   }
 
   /* Input */
   .input {
-    @apply w-full px-4 py-3 bg-bg-dark bg-opacity-50;
+    @apply w-full px-3 py-2.5 bg-bg-dark bg-opacity-50;
     @apply border border-physics-primary border-opacity-30;
-    @apply rounded-lg text-text-light font-mono;
+    @apply rounded-lg text-text-light font-mono text-sm;
     @apply focus:outline-none focus:border-physics-accent focus:ring-2 focus:ring-physics-accent focus:ring-opacity-50;
     @apply transition-all duration-300;
   }
@@ -81,12 +83,12 @@
   /* Textarea */
   .textarea {
     @apply input resize-none;
-    min-height: 120px;
+    min-height: 100px;
   }
 
   /* Label */
   .label {
-    @apply block text-sm font-tech text-text-light mb-2;
+    @apply block text-xs font-tech text-text-light mb-1.5;
     @apply uppercase tracking-wider;
   }
 }

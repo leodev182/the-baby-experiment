@@ -6,10 +6,12 @@ export function useCountdown(targetDate: number): CountdownData {
     // Calcular estado inicial inmediatamente
     const now = Date.now();
 
+    // 🔧 FIX: Validar targetDate
     const validTargetDate =
       targetDate && targetDate > now
         ? targetDate
         : new Date("2025-10-26T19:00:00-03:00").getTime();
+
     const difference = validTargetDate - now;
 
     if (difference <= 0) {
@@ -41,19 +43,19 @@ export function useCountdown(targetDate: number): CountdownData {
     };
   });
 
-  // Usar ref para evitar recrear el interval si targetDate cambia levemente
-  const targetDateRef = useRef(targetDate);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Solo actualizar si el targetDate cambió significativamente (más de 1 segundo)
-    if (Math.abs(targetDate - targetDateRef.current) > 1000) {
-      targetDateRef.current = targetDate;
-    }
-
     const calculateTimeLeft = () => {
       const now = Date.now();
-      const difference = targetDateRef.current - now;
+
+      // Validar targetDate también aquí
+      const validTargetDate =
+        targetDate && targetDate > now
+          ? targetDate
+          : new Date("2025-10-26T19:00:00-03:00").getTime();
+
+      const difference = validTargetDate - now;
 
       if (difference <= 0) {
         setTimeLeft({
@@ -91,6 +93,9 @@ export function useCountdown(targetDate: number): CountdownData {
       });
     };
 
+    // Calcular inmediatamente
+    calculateTimeLeft();
+
     // Solo crear interval si no existe y no ha expirado
     if (!intervalRef.current && !timeLeft.isExpired) {
       intervalRef.current = setInterval(calculateTimeLeft, 1000);
@@ -102,7 +107,7 @@ export function useCountdown(targetDate: number): CountdownData {
         intervalRef.current = null;
       }
     };
-  }, [targetDate]); // Solo depende de targetDate
+  }, [targetDate, timeLeft.isExpired]);
 
   return timeLeft;
 }
