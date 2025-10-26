@@ -17,6 +17,7 @@ import type { GamePhase, Hypothesis } from "./types";
 import { Phase1Collider } from "./components/Games/Phase1Collider/Phase1Collider";
 import { Phase2Equation } from "./components/Games/Phase2Equation/Phase2Equation";
 import { Phase3Synthesis } from "./components/Games/Phase3Synthesis/Phase3Synthesis";
+import { logger } from "@/utils/logger";
 
 function App() {
   const [currentPhase, setCurrentPhase] = useState<GamePhase>("intro");
@@ -35,9 +36,9 @@ function App() {
   useEffect(() => {
     if (!hasDraft()) {
       initializeDraft();
-      console.log("🆕 Nuevo draft inicializado");
+      logger.log("🆕 Nuevo draft inicializado");
     } else {
-      console.log("📋 Draft existente encontrado");
+      logger.log("📋 Draft existente encontrado");
     }
     setIsInitialized(true);
   }, []);
@@ -49,14 +50,14 @@ function App() {
   const handleHypothesisSelect = (hypothesis: Hypothesis) => {
     // Sobrescribir hipótesis en localStorage (permite cambiar de opinión)
     updateHypothesis(hypothesis);
-    console.log(`✅ Hipótesis ${hypothesis} guardada en draft`);
+    logger.log(`✅ Hipótesis ${hypothesis} guardada en draft`);
 
     // Navegar a InputScreen
     setCurrentPhase("input");
   };
 
   const handleInputSubmit = async (data: InputData) => {
-    console.log("📝 Datos de input guardados en draft:", data);
+    logger.log("📝 Datos de input guardados en draft:", data);
 
     // Verificar si el draft está listo para enviar
     const draft = getDraft();
@@ -66,7 +67,7 @@ function App() {
       // Ir a los juegos primero
       setCurrentPhase("collider");
 
-      console.log("🎮 Navegando a juegos. Draft completo:", draft);
+      logger.log("🎮 Navegando a juegos. Draft completo:", draft);
     } else {
       alert("Faltan datos. Por favor completa el formulario.");
     }
@@ -84,13 +85,13 @@ function App() {
     try {
       const draft = getDraft();
 
-      console.log("🚀 Enviando predicción completa a Firebase...");
-      console.log("📦 Draft final:", draft);
+      logger.log("🚀 Enviando predicción completa a Firebase...");
+      logger.log("📦 Draft final:", draft);
 
       // Enviar a Firebase
       await submitPrediction(draft);
 
-      console.log("✅ Predicción enviada exitosamente");
+      logger.log("✅ Predicción enviada exitosamente");
 
       // IMPORTANTE: NO limpiar el draft todavía
       // SuccessScreen lo necesita para mostrar los datos
@@ -99,7 +100,7 @@ function App() {
       // Navegar a pantalla de éxito
       setCurrentPhase("submitted");
     } catch (error) {
-      console.error("❌ Error al enviar predicción:", error);
+      logger.error("❌ Error al enviar predicción:", error);
       alert("Error al enviar tu predicción. Por favor intenta de nuevo.");
     } finally {
       setIsSaving(false);
@@ -108,19 +109,19 @@ function App() {
 
   // Handlers para los juegos
   const handleColliderComplete = (score: number) => {
-    console.log(`🎮 Collider completado: ${score} pts`);
+    logger.log(`🎮 Collider completado: ${score} pts`);
     // updateGameScore("collider", score) ya se llama dentro del juego
     setCurrentPhase("equation");
   };
 
   const handleEquationComplete = (score: number) => {
-    console.log(`🎮 Equation completado: ${score} pts`);
+    logger.log(`🎮 Equation completado: ${score} pts`);
     // updateGameScore("equation", score) ya se llama dentro del juego
     setCurrentPhase("synthesis");
   };
 
   const handleSynthesisComplete = async (score: number) => {
-    console.log(`🎮 Synthesis completado: ${score} pts`);
+    logger.log(`🎮 Synthesis completado: ${score} pts`);
     // updateGameScore("synthesis", score) ya se llama dentro del juego
 
     // Después del último juego, enviar TODO a Firebase

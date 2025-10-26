@@ -4,6 +4,7 @@ import { db } from "@/lib/firebase";
 import { AdminStats } from "./AdminStats";
 import { AdminWall } from "./AdminWall";
 import type { PredictionDraft } from "@/services/localStorageService";
+import { logger } from "@/utils/logger";
 
 type Tab = "stats" | "wall";
 
@@ -28,9 +29,9 @@ export const AdminPanel = () => {
       })) as PredictionDraft[];
 
       setPredictions(data);
-      console.log("📊 Predicciones cargadas:", data.length);
+      logger.log("📊 Predicciones cargadas:", data.length);
     } catch (error) {
-      console.error("❌ Error cargando predicciones:", error);
+      logger.error("❌ Error cargando predicciones:", error);
     } finally {
       setIsLoading(false);
     }

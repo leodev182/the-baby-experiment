@@ -1,5 +1,6 @@
 import type { Hypothesis, GameScores } from "@/types";
 import type { Timestamp } from "firebase/firestore";
+import { logger } from "@/utils/logger";
 
 /**
  * Estructura del borrador (draft) en localStorage
@@ -40,7 +41,7 @@ export function initializeDraft(): PredictionDraft {
   };
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
-  console.log("📝 Draft inicializado:", userId);
+  logger.log("📝 Draft inicializado:", userId);
   return draft;
 }
 
@@ -52,16 +53,16 @@ export function getDraft(): PredictionDraft {
   const data = localStorage.getItem(STORAGE_KEY);
 
   if (!data) {
-    console.log("ℹ️ No hay draft, creando uno nuevo");
+    logger.log("ℹ️ No hay draft, creando uno nuevo");
     return initializeDraft();
   }
 
   try {
     const draft = JSON.parse(data) as PredictionDraft;
-    console.log("✅ Draft cargado:", draft.userId);
+    logger.log("✅ Draft cargado:", draft.userId);
     return draft;
   } catch (error) {
-    console.error("❌ Error parseando draft, creando uno nuevo:", error);
+    logger.error("❌ Error parseando draft, creando uno nuevo:", error);
     return initializeDraft();
   }
 }
@@ -75,7 +76,7 @@ export function updateHypothesis(hypothesis: Hypothesis): void {
   draft.timestamp = Date.now();
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
-  console.log(`📝 Hipótesis guardada en localStorage: ${hypothesis}`);
+  logger.log(`📝 Hipótesis guardada en localStorage: ${hypothesis}`);
 }
 
 /**
@@ -94,7 +95,7 @@ export function updatePersonalData(
   draft.timestamp = Date.now();
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
-  console.log("📝 Datos personales guardados en localStorage");
+  logger.log("📝 Datos personales guardados en localStorage");
 }
 
 /**
@@ -112,7 +113,7 @@ export function updateGameScore(
   draft.timestamp = Date.now();
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
-  console.log(
+  logger.log(
     `📝 Score de ${game} guardado: ${score} pts (Total: ${draft.scores.total})`
   );
 }
@@ -148,7 +149,7 @@ export function isDraftPartiallyComplete(draft: PredictionDraft): boolean {
  */
 export function clearDraft(): void {
   localStorage.removeItem(STORAGE_KEY);
-  console.log("🗑️ Draft limpiado");
+  logger.log("🗑️ Draft limpiado");
 }
 
 /**

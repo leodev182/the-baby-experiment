@@ -6,17 +6,29 @@ import {
   arrayUnion,
   serverTimestamp,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "../lib/firebase";
+import { rateLimiter, RATE_LIMITS } from "../utils/rateLimiters";
 import type { PredictionDraft } from "./localStorageService";
+import { logger } from "../utils/logger";
 
 /**
- * Envía la predicción completa a Firebase
+ * Envía la predicción completa a Firebase con rate limiting
  * UNA SOLA VEZ al final de todo el flujo
  */
 export async function submitPrediction(draft: PredictionDraft): Promise<void> {
+  // ✅ Verificar rate limit ANTES de hacer cualquier cosa
+  if (
+    !rateLimiter.isAllowed("submitPrediction", RATE_LIMITS.SUBMIT_PREDICTION)
+  ) {
+    logger.warn("⚠️ Rate limit alcanzado. Por favor espera unos segundos.");
+    throw new Error(
+      "Por favor espera unos segundos antes de enviar nuevamente"
+    );
+  }
+
   try {
-    console.log("🚀 Iniciando envío a Firebase...");
-    console.log("📦 Draft a enviar:", draft);
+    logger.log("🚀 Iniciando envío a Firebase...");
+    logger.log("📦 Draft a enviar:", draft);
 
     // Validar que el draft tenga hipótesis
     if (!draft.hypothesis) {
@@ -37,14 +49,14 @@ export async function submitPrediction(draft: PredictionDraft): Promise<void> {
       userAgent: navigator.userAgent,
     });
 
-    console.log("✅ Predicción guardada en predictions/");
+    logger.log("✅ Predicción guardada en predictions/");
 
     // 2. Actualizar estadísticas globales en config/event
     await updateStats(draft);
 
-    console.log("🎉 ¡Predicción enviada exitosamente!");
+    logger.log("🎉 ¡Predicción enviada exitosamente!");
   } catch (error) {
-    console.error("❌ Error enviando predicción:", error);
+    logger.error("❌ Error enviando predicción:", error);
     throw error;
   }
 }
@@ -72,9 +84,8 @@ async function updateStats(draft: PredictionDraft): Promise<void> {
       "stats.lastUpdated": serverTimestamp(),
     });
 
-    console.log("✅ Estadísticas actualizadas en config/event");
+    logger.log("✅ Estadísticas actualizadas en config/event");
   } catch (error) {
-    console.error("⚠️ Error actualizando stats (no crítico):", error);
-    // No lanza error porque la predicción YA se guardó
+    logger.error("⚠️ Error actualizando stats (no crítico):", error);
   }
 }

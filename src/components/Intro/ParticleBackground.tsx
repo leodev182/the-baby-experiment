@@ -36,8 +36,10 @@ export function ParticleBackground() {
       "rgba(168, 85, 247, ", // purple-500 (química)
     ];
 
-    // Crear partículas
-    const particleCount = 60;
+    // Detectar móvil y optimizar
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const particleCount = isMobile ? 20 : 60;
+    const maxDistance = isMobile ? 80 : 120;
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {
@@ -54,7 +56,7 @@ export function ParticleBackground() {
 
     // Función de animación
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar completamente en vez de trail
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Actualizar y dibujar partículas
       particles.forEach((particle) => {
@@ -84,12 +86,12 @@ export function ParticleBackground() {
           const dy = particles[i].y - particles[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 120) {
+          if (distance < maxDistance) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.strokeStyle = `rgba(100, 200, 255, ${
-              0.15 * (1 - distance / 120)
+              0.15 * (1 - distance / maxDistance)
             })`;
             ctx.lineWidth = 0.5;
             ctx.stroke();

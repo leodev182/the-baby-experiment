@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useCountdown } from "../../hooks/useCountdown";
 import { useEventConfig } from "../../hooks/useEventConfig";
 import type { GamePhase } from "../../types";
@@ -7,8 +8,16 @@ interface SpaceComputerProps {
 }
 
 export function SpaceComputer({ currentPhase }: SpaceComputerProps) {
-  const { config } = useEventConfig(); // Removemos el loading check
-  const countdown = useCountdown(config?.revealDate || Date.now());
+  const { config } = useEventConfig();
+
+  // ✅ FIX: Memorizar la fecha target para evitar que cambie en cada render
+  const targetDate = useMemo(() => {
+    return (
+      config?.revealDate || new Date("2025-10-26T19:00:00-03:00").getTime()
+    );
+  }, [config?.revealDate]);
+
+  const countdown = useCountdown(targetDate);
 
   // Calcular progreso de gestación
   // FPP: 29 enero 2026
