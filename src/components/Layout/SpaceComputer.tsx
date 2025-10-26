@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useCountdown } from "../../hooks/useCountdown";
-import { useEventConfig } from "../../hooks/useEventConfig";
+import { useEventConfigContext } from "../../context/EventConfigContext";
 import type { GamePhase } from "../../types";
 
 interface SpaceComputerProps {
@@ -8,9 +8,9 @@ interface SpaceComputerProps {
 }
 
 export function SpaceComputer({ currentPhase }: SpaceComputerProps) {
-  const { config } = useEventConfig();
+  const { config } = useEventConfigContext();
 
-  // ✅ FIX: Memorizar la fecha target para evitar que cambie en cada render
+  //  Memorizar la fecha target para evitar que cambie en cada render
   const targetDate = useMemo(() => {
     return (
       config?.revealDate || new Date("2025-10-26T19:00:00-03:00").getTime()
