@@ -44,12 +44,21 @@ export function IntroScreen({ onStart, config }: IntroScreenProps) {
               <Button
                 onClick={() =>
                   (window.location.href =
+                    "https://baby-reveal-experiment-f9bb0.web.app/baby-shower")
+                }
+                variant="primary"
+              >
+                🔬 Confirma tu asistencia
+              </Button>
+              {/* <Button
+                onClick={() =>
+                  (window.location.href =
                     "https://baby-reveal-experiment-f9bb0.web.app/admin-stats-2025")
                 }
                 variant="primary"
               >
                 🔬 Ver Predicciones del Experimento
-              </Button>
+              </Button> */}
               <p className="mt-4 text-sm text-yellow-400 font-mono">
                 ⚠️ El plazo para enviar predicciones ha finalizado
               </p>

@@ -279,6 +279,7 @@ export interface InvitedGroup {
   mainGuest: string;
   companions: string[];
   isSpecial?: boolean;
+  isMemoryOnly?: boolean;
 }
 
 /**

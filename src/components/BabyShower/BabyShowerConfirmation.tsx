@@ -1,3 +1,5 @@
+// src/components/BabyShower/BabyShowerConfirmation.tsx
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { INVITED_GROUPS } from "@/data/invitedGroups";
@@ -9,6 +11,7 @@ import {
 import type { Attendee, SelectedGift, GiftStock } from "@/types";
 import { GiftSelector } from "./GiftSelector";
 import { DeclineModal } from "./DeclineModal";
+import { MemoryCard } from "./MemoryCard";
 
 export function BabyShowerConfirmation() {
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
@@ -43,6 +46,11 @@ export function BabyShowerConfirmation() {
   // Inicializar attendees cuando se selecciona un grupo
   useEffect(() => {
     if (selectedGroup) {
+      // Si es grupo de recuerdo, no hacer nada más
+      if (selectedGroup.isMemoryOnly) {
+        return;
+      }
+
       checkIfAlreadyConfirmed();
 
       const allGuests = [selectedGroup.mainGuest, ...selectedGroup.companions];
@@ -58,7 +66,7 @@ export function BabyShowerConfirmation() {
         setSpecialCompanion({ name: "", rut: "", attending: false });
       }
     }
-  }, [selectedGroupId]);
+  }, [selectedGroupId, selectedGroup]);
 
   async function checkIfAlreadyConfirmed() {
     if (!selectedGroupId) return;
@@ -75,7 +83,7 @@ export function BabyShowerConfirmation() {
     if (field === "attending") {
       updated[index].attending = value as boolean;
       if (!value) {
-        updated[index].rut = ""; // Limpiar RUT si no asiste
+        updated[index].rut = "";
       }
     } else {
       updated[index].rut = value as string;
@@ -106,7 +114,6 @@ export function BabyShowerConfirmation() {
       return "Debes marcar al menos una opción de asistencia";
     }
 
-    // Validar RUT obligatorio para los que asisten
     for (const attendee of attendees) {
       if (attendee.attending && !attendee.rut.trim()) {
         return `Por favor ingresa el RUT de ${attendee.name}`;
@@ -162,7 +169,6 @@ export function BabyShowerConfirmation() {
 
       await submitBabyShowerConfirmation(confirmation);
 
-      // Redirigir a success
       window.location.href = "/baby-shower-success";
     } catch (error) {
       console.error("Error submitting confirmation:", error);
@@ -239,8 +245,13 @@ export function BabyShowerConfirmation() {
             </select>
           </div>
 
-          {/* Attendees List */}
-          {selectedGroup && (
+          {/* SI ES GRUPO RECUERDO, MOSTRAR SOLO LA TARJETA */}
+          {selectedGroup && selectedGroup.isMemoryOnly && (
+            <MemoryCard guestName={selectedGroup.mainGuest} />
+          )}
+
+          {/* SI NO ES GRUPO RECUERDO, MOSTRAR FORMULARIO NORMAL */}
+          {selectedGroup && !selectedGroup.isMemoryOnly && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -346,6 +357,7 @@ export function BabyShowerConfirmation() {
                   </div>
                 </div>
               )}
+
               {/* Gifts Selector */}
               <GiftSelector
                 giftsStock={giftsStock}
