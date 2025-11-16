@@ -1,12 +1,18 @@
 import { ScientificNarrative } from "./ScientificNarrative";
 import { ParticleBackground } from "./ParticleBackground";
 import { Button } from "../Shared/Button";
+import type { EventConfig } from "../../types";
 
 interface IntroScreenProps {
   onStart: () => void;
+  config?: EventConfig | null; // ✅ Recibe config como prop opcional
 }
 
-export function IntroScreen({ onStart }: IntroScreenProps) {
+export function IntroScreen({ onStart, config }: IntroScreenProps) {
+  const isPastDeadline = config?.revealDate
+    ? Date.now() >= config.revealDate
+    : false;
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 relative overflow-x-hidden">
       {/* Fondo de partículas animadas */}
@@ -20,7 +26,9 @@ export function IntroScreen({ onStart }: IntroScreenProps) {
             BABY-REVEAL v1.0
           </h1>
           <p className="text-gray-400 text-lg font-mono">
-            Iniciando protocolo experimental...
+            {isPastDeadline
+              ? "Las predicciones han cerrado"
+              : "Iniciando protocolo experimental..."}
           </p>
         </div>
 
@@ -31,13 +39,31 @@ export function IntroScreen({ onStart }: IntroScreenProps) {
 
         {/* Botón de inicio */}
         <div className="mt-12 text-center relative z-10">
-          <Button onClick={onStart} variant="primary">
-            🚀 Unirme al Experimento
-          </Button>
-
-          <p className="mt-4 text-xs text-gray-500 font-mono">
-            Sistema operativo | Firebase conectado | Fase: INTRO
-          </p>
+          {isPastDeadline ? (
+            <>
+              <Button
+                onClick={() =>
+                  (window.location.href =
+                    "https://baby-reveal-experiment-f9bb0.web.app/admin-stats-2025")
+                }
+                variant="primary"
+              >
+                🔬 Ver Predicciones del Experimento
+              </Button>
+              <p className="mt-4 text-sm text-yellow-400 font-mono">
+                ⚠️ El plazo para enviar predicciones ha finalizado
+              </p>
+            </>
+          ) : (
+            <>
+              <Button onClick={onStart} variant="primary">
+                🚀 Unirme al Experimento
+              </Button>
+              <p className="mt-4 text-xs text-gray-500 font-mono">
+                Sistema operativo | Firebase conectado | Fase: INTRO
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
