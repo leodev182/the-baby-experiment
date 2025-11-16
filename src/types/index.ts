@@ -233,6 +233,65 @@ export interface ExportOptions {
 }
 
 // ============================================
+// BABY SHOWER
+// ============================================
+
+export interface Attendee {
+  name: string;
+  rut: string;
+  attending: boolean;
+}
+
+export interface SelectedGift {
+  id: string;
+  name: string;
+  quantity: number;
+}
+
+export interface BabyShowerConfirmation {
+  id?: string;
+  groupId: string;
+  mainGuestName: string;
+  attendees: Attendee[];
+  gifts: SelectedGift[];
+  specialCompanion?: {
+    name: string;
+    rut: string;
+    attending: boolean;
+  };
+  allDeclined: boolean;
+  timestamp: number;
+}
+
+export interface GiftStock {
+  id: string;
+  name: string;
+  maxCount: number;
+  currentCount: number;
+  isUnique: boolean;
+}
+
+/**
+ * Grupo de invitados (viene de invitedGroups.ts)
+ */
+export interface InvitedGroup {
+  id: string;
+  mainGuest: string;
+  companions: string[];
+  isSpecial?: boolean;
+}
+
+/**
+ * Gift base (viene de giftsList.ts)
+ */
+export interface Gift {
+  id: string;
+  name: string;
+  maxCount: number;
+  isUnique: boolean;
+}
+
+// ============================================
 // CONSTANTES
 // ============================================
 

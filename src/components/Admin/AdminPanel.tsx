@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { AdminStats } from "./AdminStats";
@@ -6,7 +6,14 @@ import { AdminWall } from "./AdminWall";
 import type { PredictionDraft } from "@/services/localStorageService";
 import { logger } from "@/utils/logger";
 
-type Tab = "stats" | "wall";
+// Lazy load del componente Baby Shower
+const BabyShowerConfirmationsPublic = lazy(() =>
+  import("../BabyShower/BabyShowerConfirmationsPublic").then((module) => ({
+    default: module.BabyShowerConfirmationsPublic,
+  }))
+);
+
+type Tab = "stats" | "wall" | "babyshower";
 
 export const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState<Tab>("stats");
@@ -52,7 +59,7 @@ export const AdminPanel = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-6 flex-wrap">
           <button
             onClick={() => setActiveTab("stats")}
             className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
@@ -73,10 +80,20 @@ export const AdminPanel = () => {
           >
             📋 Muro de Predicciones
           </button>
+          <button
+            onClick={() => setActiveTab("babyshower")}
+            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+              activeTab === "babyshower"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg"
+                : "bg-white/10 text-blue-200 hover:bg-white/20"
+            }`}
+          >
+            🍼 Confirmaciones Baby Shower
+          </button>
         </div>
 
         {/* Loading State */}
-        {isLoading && (
+        {isLoading && activeTab !== "babyshower" && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
               <div className="text-cyan-400 text-xl mb-4 animate-pulse">
@@ -90,16 +107,24 @@ export const AdminPanel = () => {
         )}
 
         {/* Content */}
-        {!isLoading && (
-          <>
-            {activeTab === "stats" && <AdminStats predictions={predictions} />}
-            {activeTab === "wall" && (
-              <AdminWall
-                predictions={predictions}
-                onRefresh={loadPredictions}
-              />
-            )}
-          </>
+        {!isLoading && activeTab === "stats" && (
+          <AdminStats predictions={predictions} />
+        )}
+        {!isLoading && activeTab === "wall" && (
+          <AdminWall predictions={predictions} onRefresh={loadPredictions} />
+        )}
+        {activeTab === "babyshower" && (
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center py-20">
+                <div className="text-cyan-400 animate-pulse">
+                  Cargando confirmaciones...
+                </div>
+              </div>
+            }
+          >
+            <BabyShowerConfirmationsPublic />
+          </Suspense>
         )}
       </div>
     </div>

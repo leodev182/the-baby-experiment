@@ -19,16 +19,17 @@ import { Phase1Collider } from "./components/Games/Phase1Collider/Phase1Collider
 import { Phase2Equation } from "./components/Games/Phase2Equation/Phase2Equation";
 import { Phase3Synthesis } from "./components/Games/Phase3Synthesis/Phase3Synthesis";
 import { logger } from "./utils/logger";
+import { BabyShowerConfirmation } from "./components/BabyShower/BabyShowerConfirmation";
+import { BabyShowerSuccess } from "./components/BabyShower/BabyShowerSuccess";
+import { BabyShowerAdminPrivate } from "./components/BabyShower/BabyShowerAdminPrivate";
 
 function App() {
   const [currentPhase, setCurrentPhase] = useState<GamePhase>("intro");
   const [isSaving, setIsSaving] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // ✅ Cargar config UNA VEZ aquí
   const { config } = useEventConfig();
 
-  // ✅ HOOKS SIEMPRE AL INICIO - Antes de cualquier return condicional
   useEffect(() => {
     if (!hasDraft()) {
       initializeDraft();
@@ -39,21 +40,36 @@ function App() {
     setIsInitialized(true);
   }, []);
 
-  // Detectar si estamos en la ruta de admin
-  const isAdminRoute = window.location.pathname === "/admin-stats-2025";
+  // Detectar rutas
+  const currentPath = window.location.pathname;
+  const isAdminRoute = currentPath === "/admin-stats-2025";
+  const isBabyShowerRoute = currentPath === "/baby-shower";
+  const isBabyShowerSuccessRoute = currentPath === "/baby-shower-success";
+  const isBabyShowerAdminRoute = currentPath === "/baby-shower-admin-2025";
 
-  // Si es ruta admin, mostrar AdminPanel directamente
+  // Rutas Baby Shower
+  if (isBabyShowerRoute) {
+    return <BabyShowerConfirmation />;
+  }
+
+  if (isBabyShowerSuccessRoute) {
+    return <BabyShowerSuccess />;
+  }
+
+  if (isBabyShowerAdminRoute) {
+    return <BabyShowerAdminPrivate />;
+  }
+
+  // Ruta Admin Panel
   if (isAdminRoute) {
     return <AdminPanel />;
   }
 
-  // ✅ Verificar si ya pasó la fecha límite
   const isPastDeadline = config?.revealDate
     ? Date.now() >= config.revealDate
     : false;
 
   const handleStart = () => {
-    // Si ya pasó el deadline, ir directo al muro
     if (isPastDeadline) {
       window.location.href = "/predictions";
       return;
@@ -147,7 +163,6 @@ function App() {
         </div>
       )}
 
-      {/* ✅ Pasar config como prop */}
       {currentPhase === "intro" && (
         <IntroScreen onStart={handleStart} config={config} />
       )}
